@@ -7,7 +7,7 @@ from esphome.core import CORE
 from esphome.components import sensor, voltage_sampler
 from esphome.components.esp32 import get_esp32_variant
 from esphome.const import (
-    #CONF_ATTENUATION,
+    CONF_ATTENUATION,
     CONF_ID,
     CONF_NUMBER,
     CONF_PIN,
@@ -18,7 +18,7 @@ from esphome.const import (
     UNIT_VOLT,
 )
 from . import (
-    #ATTENUATION_MODES,
+    ATTENUATION_MODES,
     ESP32_VARIANT_ADC1_PIN_TO_CHANNEL,
     ESP32_VARIANT_ADC2_PIN_TO_CHANNEL,
     adc_ns,
