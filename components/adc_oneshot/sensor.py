@@ -19,6 +19,9 @@ from esphome.const import (
 )
 from . import (
     ATTENUATION_MODES,
+    ULP_WORKING_MODES,
+    ADC_BITWIDTH_MODES,
+    ADC_UNIT_MODES,
     ESP32_VARIANT_ADC1_PIN_TO_CHANNEL,
     ESP32_VARIANT_ADC2_PIN_TO_CHANNEL,
     adc_ns,
@@ -30,9 +33,15 @@ _LOGGER = logging.getLogger(__name__)
 AUTO_LOAD = ["voltage_sampler"]
 
 CONF_SAMPLES = "samples"
+CONF_UPLMODE = "upl_mode"
+CONF_ADCUNIT = "unit"
+CONF_BITWIDTH = "bitwidth"
 
 
 _attenuation = cv.enum(ATTENUATION_MODES, lower=True)
+_adcuplmode = cv.enum(ULP_WORKING_MODES, lower=True)
+_adcbitwidth = cv.enum(ADC_BITWIDTH_MODES, lower=True)
+_adcunit = cv.enum(ADC_UNIT_MODES, lower=True)
 
 
 def validate_config(config):
@@ -87,7 +96,22 @@ CONFIG_SCHEMA = cv.All(
             cv.SplitDefault(CONF_ATTENUATION, esp32="0db"): cv.All(
                cv.only_on_esp32, _attenuation
             ),
+
             cv.Optional(CONF_SAMPLES, default=1): cv.int_range(min=1, max=255),
+
+
+            cv.SplitDefault(CONF_UPLMODE, esp32="disabled"): cv.All(
+               cv.only_on_esp32, _adcuplmode
+            ),
+            
+            cv.SplitDefault(CONF_ADCUNIT, esp32="unit1"): cv.All(
+                cv.only_on_esp32, _adcunit
+            ),
+            
+            cv.SplitDefault(CONF_BITWIDTH, esp32="default"): cv.All(
+                cv.only_on_esp32, _adcbitwidth
+            ),                        
+
         }
     )
     .extend(cv.polling_component_schema("60s")),

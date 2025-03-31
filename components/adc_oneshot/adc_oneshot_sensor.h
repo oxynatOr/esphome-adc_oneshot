@@ -30,6 +30,50 @@ static const adc_atten_t ADC_ATTEN_DB_12_COMPAT = ADC_ATTEN_DB_11;
 #endif
 #endif  // USE_ESP32
 
+
+enum class SamplingMode : uint8_t { 
+  AVG = 0, 
+  MIN = 1, 
+  MAX = 2 
+};
+
+enum class UnitMode : uint8_t {
+  ADC_CONV_SINGLE_UNIT_1 = 0,
+  ADC_CONV_SINGLE_UNIT_2 = 1,
+  ADC_CONV_BOTH_UNIT = 2,
+  ADC_CONV_ALTER_UNIT = 3
+};
+
+enum class BitWidthMode : uint8_t {
+  ADC_BITWIDTH_DEFAULT = 0,
+  ADC_BITWIDTH_9 = 1,
+  ADC_BITWIDTH_10 = 2,
+  ADC_BITWIDTH_11 = 3,
+  ADC_BITWIDTH_12 = 4,
+  ADC_BITWIDTH_13 = 5
+};
+
+enum class WorkingMode : uint8_t { 
+  ADC_ULP_MODE_DISABLE = 0, 
+  ADC_ULP_MODE_FSM = 1,
+  ADC_ULP_MODE_RISCV = 2
+};
+
+
+const LogString *sampling_mode_to_str(SamplingMode mode);
+
+class Aggregator {
+  public:
+   void add_sample(uint32_t value);
+   uint32_t aggregate();
+   Aggregator(SamplingMode mode);
+ 
+  protected:
+   SamplingMode mode_{SamplingMode::AVG};
+   uint32_t aggr_{0};
+   uint32_t samples_{0};
+ };
+
 class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public voltage_sampler::VoltageSampler {
  public:
 #ifdef USE_ESP32
@@ -59,6 +103,8 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
   void set_pin(InternalGPIOPin *pin) { this->pin_ = pin; }
   void set_output_raw(bool output_raw) { this->output_raw_ = output_raw; }
   void set_sample_count(uint8_t sample_count);
+  void set_sampling_mode(SamplingMode sampling_mode);
+
 
   float sample() override;
 
@@ -76,8 +122,13 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
   InternalGPIOPin *pin_;
   bool output_raw_{false};
   uint8_t sample_count_{1};
+  SamplingMode sampling_mode_{SamplingMode::AVG};
+  WorkingMode working_mode_{WorkingMode::ADC_ULP_MODE_DISABLE};
+  BitWidthMode bitwidth_mode_{BitWidthMode::ADC_BITWIDTH_DEFAULT};
+  UnitMode unit_mode_{UnitMode::ADC_CONV_SINGLE_UNIT_1};
 #ifdef USE_ESP32
-  adc_atten_t attenuation_{ADC_ATTEN_DB_0};
+  adc_atten_t attenuation_{ADC_ATTEN_DB_12};
+
 #endif
 
 #ifdef USE_RP2040

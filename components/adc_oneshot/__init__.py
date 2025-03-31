@@ -20,16 +20,53 @@ CODEOWNERS = ["@esphome/core"]
 
 adc_ns = cg.esphome_ns.namespace("adc_oneshot")
 
-
-
+"""
+From the below patch versions (and 5.2+) ADC_ATTEN_DB_11 is deprecated and replaced with ADC_ATTEN_DB_12.
+4.4.7
+5.0.5
+5.1.3
+5.2+
+"""
 
 ATTENUATION_MODES = {
     "0db": cg.global_ns.ADC_ATTEN_DB_0,
     "2.5db": cg.global_ns.ADC_ATTEN_DB_2_5,
     "6db": cg.global_ns.ADC_ATTEN_DB_6,
-    "11db": adc_ns.ADC_ATTEN_DB_12_COMPAT,
+    "11db": cg.global_ns.ADC_ATTEN_DB_12,
     "12db": adc_ns.ADC_ATTEN_DB_12_COMPAT,
     "auto": "auto",
+}
+
+wokring_mode = adc_ns.enum("WorkingMode", is_class=True)
+ULP_WORKING_MODES = {
+    "disabled": ADC_ULP_MODE_DISABLE,        """< ADC ULP mode is disabled"""
+    "fsm": ADC_ULP_MODE_FSM,                 """< ADC is controlled by ULP FSM"""
+    "riscv": ADC_ULP_MODE_RISCV,             """< ADC is controlled by ULP RISCV"""
+}
+
+bitwidth_mode = adc_ns.enum("BitWidthMode", is_class=True)
+ADC_BITWIDTH_MODES = {
+    "default": ADC_BITWIDTH_DEFAULT,         """< Default ADC output bits, max supported width will be selected"""
+    "9bit": ADC_BITWIDTH_9,                  """< ADC output width is 9Bit"""
+    "10bit": ADC_BITWIDTH_10,                """< ADC output width is 10Bit"""
+    "11bit": ADC_BITWIDTH_11,                """< ADC output width is 11Bit"""
+    "12bit": ADC_BITWIDTH_12,                """< ADC output width is 12Bit"""
+    "13bit": ADC_BITWIDTH_13                 """< ADC output width is 13Bit"""
+}
+
+unit_mode = adc_ns.enum("UnitMode", is_class=True)
+ADC_UNIT_MODES = {
+    "unit1": ADC_CONV_SINGLE_UNIT_1,         """< Only use ADC1 for conversion"""
+    "unit2": ADC_CONV_SINGLE_UNIT_2,         """< Only use ADC2 for conversion"""
+    "both": ADC_CONV_BOTH_UNIT,              """< Use Both ADC1 and ADC2 for conversion simultaneously"""
+    "alter": ADC_CONV_ALTER_UNIT             """< Use both ADC1 and ADC2 for conversion by turn. e.g. ADC1 -> ADC2 -> ADC1 -> ADC2 ....."""
+}
+
+sampling_mode = adc_ns.enum("SamplingMode", is_class=True)
+SAMPLING_MODES = {
+    "avg": sampling_mode.AVG,
+    "min": sampling_mode.MIN,
+    "max": sampling_mode.MAX,
 }
 
 adc1_channel_t = cg.global_ns.enum("adc1_channel_t")
@@ -38,6 +75,13 @@ adc2_channel_t = cg.global_ns.enum("adc2_channel_t")
 # From https://github.com/espressif/esp-idf/blob/v5.2.2/components/hal/include/hal/adc_types.h
 # pin to adc1 channel mapping
 ESP32_VARIANT_ADC1_PIN_TO_CHANNEL = {
+    VARIANT_ESP32C2: {
+        0: adc1_channel_t.ADC1_CHANNEL_0,
+        1: adc1_channel_t.ADC1_CHANNEL_1,
+        2: adc1_channel_t.ADC1_CHANNEL_2,
+        3: adc1_channel_t.ADC1_CHANNEL_3,
+        4: adc1_channel_t.ADC1_CHANNEL_4,
+    },    
     VARIANT_ESP32C6: {
         0: adc1_channel_t.ADC_CHANNEL_0,    # ADC1_CHANNEL_0,
         1: adc1_channel_t.ADC_CHANNEL_1,
@@ -46,7 +90,7 @@ ESP32_VARIANT_ADC1_PIN_TO_CHANNEL = {
         4: adc1_channel_t.ADC_CHANNEL_4,
         5: adc1_channel_t.ADC_CHANNEL_5,
         6: adc1_channel_t.ADC_CHANNEL_6,
-    },
+    },    
     VARIANT_ESP32H2: {
         0: adc1_channel_t.ADC1_CHANNEL_0,
         1: adc1_channel_t.ADC1_CHANNEL_1,

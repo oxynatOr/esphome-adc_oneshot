@@ -16,6 +16,61 @@ namespace adc_oneshot {
 
 static const char *const TAG = "adc_oneshot";
 
+const LogString *sampling_mode_to_str(SamplingMode mode) {
+  switch (mode) {
+    case SamplingMode::AVG:
+      return LOG_STR("average");
+    case SamplingMode::MIN:
+      return LOG_STR("minimum");
+    case SamplingMode::MAX:
+      return LOG_STR("maximum");
+  }
+  return LOG_STR("unknown");
+}
+
+Aggregator::Aggregator(SamplingMode mode) {
+  this->mode_ = mode;
+  // set to max uint if mode is "min"
+  if (mode == SamplingMode::MIN) {
+    this->aggr_ = UINT32_MAX;
+  }
+}
+
+void Aggregator::add_sample(uint32_t value) {
+  this->samples_ += 1;
+
+  switch (this->mode_) {
+    case SamplingMode::AVG:
+      this->aggr_ += value;
+      break;
+
+    case SamplingMode::MIN:
+      if (value < this->aggr_) {
+        this->aggr_ = value;
+      }
+      break;
+
+    case SamplingMode::MAX:
+      if (value > this->aggr_) {
+        this->aggr_ = value;
+      }
+  }
+}
+
+uint32_t Aggregator::aggregate() {
+  if (this->mode_ == SamplingMode::AVG) {
+    if (this->samples_ == 0) {
+      return this->aggr_;
+    }
+
+    return (this->aggr_ + (this->samples_ >> 1)) / this->samples_;  // NOLINT(clang-analyzer-core.DivideZero)
+  }
+
+  return this->aggr_;
+}
+
+
+
 /*---------------------------------------------------------------
         ADC General Macros
 ---------------------------------------------------------------*/
@@ -104,6 +159,7 @@ void ADCOneshotSensor::dump_config() {
   }
 #endif  // USE_RP2040
   ESP_LOGCONFIG(TAG, "  Samples: %i", this->sample_count_);
+  ESP_LOGCONFIG(TAG, "  Sampling mode: %s", LOG_STR_ARG(sampling_mode_to_str(this->sampling_mode_)));
   LOG_UPDATE_INTERVAL(this);
 }
 
@@ -120,6 +176,8 @@ void ADCOneshotSensor::set_sample_count(uint8_t sample_count) {
   }
 }
 
+void ADCOneshotSensor::set_sampling_mode(SamplingMode sampling_mode) { this->sampling_mode_ = sampling_mode; }
+
 #ifdef USE_ESP32
 float ADCOneshotSensor::sample()
 {
@@ -135,8 +193,8 @@ float ADCOneshotSensor::sample()
   ESP_ERROR_CHECK(adc_oneshot_new_unit(&init_config1, &adc1_handle));
   
   //-------------ADC1 Config---------------//
-  adc_oneshot_chan_cfg_t config = {
-      .atten = ADC_ATTEN_DB_12,
+  adc_oneshot_chan_cfg_t config = {    
+      .atten = this->attenuation_,
       .bitwidth = ADC_BITWIDTH_DEFAULT,
   };
   ESP_ERROR_CHECK(adc_oneshot_config_channel(adc1_handle, this->channel1_, &config));
