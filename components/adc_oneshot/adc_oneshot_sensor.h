@@ -58,7 +58,10 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
   void set_pin(InternalGPIOPin *pin) { this->pin_ = pin; }
   void set_output_raw(bool output_raw) { this->output_raw_ = output_raw; }
   void set_sample_count(uint8_t sample_count);
+  void set_attenuation(adc_atten_t attenuation) { this->attenuation_ = attenuation; }
   float sample() override;
+  
+  
 
 #ifdef USE_ESP8266
   std::string unique_id() override;
@@ -69,6 +72,7 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
 #endif
 
  protected:
+  adc_atten_t attenuation_{ADC_ATTEN_DB_0};
   InternalGPIOPin *pin_;
   bool output_raw_{false};
   uint8_t sample_count_{1};
