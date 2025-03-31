@@ -74,7 +74,22 @@ void ADCOneshotSensor::dump_config() {
 
 #ifdef USE_ESP32
   LOG_PIN("  Pin: ", this->pin_);
-
+  switch (this->attenuation_) {
+    case ADC_ATTEN_DB_0:
+      ESP_LOGCONFIG(TAG, "  Attenuation: 0db");
+      break;
+    case ADC_ATTEN_DB_2_5:
+      ESP_LOGCONFIG(TAG, "  Attenuation: 2.5db");
+      break;
+    case ADC_ATTEN_DB_6:
+      ESP_LOGCONFIG(TAG, "  Attenuation: 6db");
+      break;
+    case ADC_ATTEN_DB_12_COMPAT:
+      ESP_LOGCONFIG(TAG, "  Attenuation: 12db");
+      break;
+    default:  // This is to satisfy the unused ADC_ATTEN_MAX
+      break;
+  }
 #endif  // USE_ESP32
 
 #ifdef USE_RP2040

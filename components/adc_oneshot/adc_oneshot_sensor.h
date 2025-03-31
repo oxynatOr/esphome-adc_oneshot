@@ -45,6 +45,7 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
     this->channel1_ = ADC_CHANNEL_9;
  }
  
+ void set_attenuation(adc_atten_t attenuation) { this->attenuation_ = attenuation; }
 
 #endif
 
@@ -60,8 +61,7 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
   void set_sample_count(uint8_t sample_count);
   void set_attenuation(adc_atten_t attenuation) { this->attenuation_ = attenuation; }
   float sample() override;
-  
-  
+
 
 #ifdef USE_ESP8266
   std::string unique_id() override;
@@ -72,10 +72,13 @@ class ADCOneshotSensor : public sensor::Sensor, public PollingComponent, public 
 #endif
 
  protected:
-  adc_atten_t attenuation_{ADC_ATTEN_DB_0};
+
   InternalGPIOPin *pin_;
   bool output_raw_{false};
   uint8_t sample_count_{1};
+#ifdef USE_ESP32
+  adc_atten_t attenuation_{ADC_ATTEN_DB_0};
+#endif
 
 #ifdef USE_RP2040
   bool is_temperature_{false};
