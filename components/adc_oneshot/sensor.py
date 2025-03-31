@@ -32,7 +32,7 @@ AUTO_LOAD = ["voltage_sampler"]
 CONF_SAMPLES = "samples"
 
 
-#_attenuation = cv.enum(ATTENUATION_MODES, lower=True)
+_attenuation = cv.enum(ATTENUATION_MODES, lower=True)
 
 
 def validate_config(config):
@@ -84,9 +84,9 @@ CONFIG_SCHEMA = cv.All(
         {
             cv.Required(CONF_PIN): validate_adc_pin,
             cv.Optional(CONF_RAW, default=False): cv.boolean,
-            #cv.SplitDefault(CONF_ATTENUATION, esp32="0db"): cv.All(
-            #    cv.only_on_esp32, _attenuation
-            #),
+            cv.SplitDefault(CONF_ATTENUATION, esp32="0db"): cv.All(
+               cv.only_on_esp32, _attenuation
+            ),
             cv.Optional(CONF_SAMPLES, default=1): cv.int_range(min=1, max=255),
         }
     )
@@ -113,11 +113,11 @@ async def to_code(config):
     cg.add(var.set_output_raw(config[CONF_RAW]))
     cg.add(var.set_sample_count(config[CONF_SAMPLES]))
 
-    #if attenuation := config.get(CONF_ATTENUATION):
-    #    if attenuation == "auto":
-    #        cg.add(var.set_autorange(cg.global_ns.true))
-    #    else:
-    #        cg.add(var.set_attenuation(attenuation))
+    if attenuation := config.get(CONF_ATTENUATION):
+       if attenuation == "auto":
+           cg.add(var.set_autorange(cg.global_ns.true))
+       else:
+           cg.add(var.set_attenuation(attenuation))
 
     if CORE.is_esp32:
         variant = get_esp32_variant()
