@@ -41,7 +41,7 @@ wokring_mode = adc_ns.enum("WorkingMode", is_class=True)
 ULP_WORKING_MODES = {
     "disabled": ADC_ULP_MODE_DISABLE,        """< ADC ULP mode is disabled"""
     "fsm": ADC_ULP_MODE_FSM,                 """< ADC is controlled by ULP FSM"""
-    "riscv": ADC_ULP_MODE_RISCV,             """< ADC is controlled by ULP RISCV"""
+    "riscv": ADC_ULP_MODE_RISCV             """< ADC is controlled by ULP RISCV"""
 }
 
 bitwidth_mode = adc_ns.enum("BitWidthMode", is_class=True)
@@ -66,7 +66,7 @@ sampling_mode = adc_ns.enum("SamplingMode", is_class=True)
 SAMPLING_MODES = {
     "avg": sampling_mode.AVG,
     "min": sampling_mode.MIN,
-    "max": sampling_mode.MAX,
+    "max": sampling_mode.MAX
 }
 
 adc1_channel_t = cg.global_ns.enum("adc1_channel_t")
