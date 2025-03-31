@@ -37,29 +37,31 @@ ATTENUATION_MODES = {
     "auto": "auto",
 }
 
+
+
 wokring_mode = adc_ns.enum("WorkingMode", is_class=True)
 ULP_WORKING_MODES = {
-    "disabled": ADC_ULP_MODE_DISABLE,        """< ADC ULP mode is disabled"""
-    "fsm": ADC_ULP_MODE_FSM,                 """< ADC is controlled by ULP FSM"""
-    "riscv": ADC_ULP_MODE_RISCV             """< ADC is controlled by ULP RISCV"""
+    "disabled": ADC_ULP_MODE_DISABLE,        #< ADC ULP mode is disabled
+    "fsm": ADC_ULP_MODE_FSM,                 #< ADC is controlled by ULP FSM
+    "riscv": ADC_ULP_MODE_RISCV,             #< ADC is controlled by ULP RISCV
 }
 
 bitwidth_mode = adc_ns.enum("BitWidthMode", is_class=True)
 ADC_BITWIDTH_MODES = {
-    "default": ADC_BITWIDTH_DEFAULT,         """< Default ADC output bits, max supported width will be selected"""
-    "9bit": ADC_BITWIDTH_9,                  """< ADC output width is 9Bit"""
-    "10bit": ADC_BITWIDTH_10,                """< ADC output width is 10Bit"""
-    "11bit": ADC_BITWIDTH_11,                """< ADC output width is 11Bit"""
-    "12bit": ADC_BITWIDTH_12,                """< ADC output width is 12Bit"""
-    "13bit": ADC_BITWIDTH_13                 """< ADC output width is 13Bit"""
+    "default": ADC_BITWIDTH_DEFAULT,         #< Default ADC output bits, max supported width will be selected
+    "9bit": ADC_BITWIDTH_9,                  #< ADC output width is 9Bit
+    "10bit": ADC_BITWIDTH_10,                #< ADC output width is 10Bit
+    "11bit": ADC_BITWIDTH_11,                #< ADC output width is 11Bit
+    "12bit": ADC_BITWIDTH_12,                #< ADC output width is 12Bit
+    "13bit": ADC_BITWIDTH_13,                #< ADC output width is 13Bit
 }
 
 unit_mode = adc_ns.enum("UnitMode", is_class=True)
 ADC_UNIT_MODES = {
-    "unit1": ADC_CONV_SINGLE_UNIT_1,         """< Only use ADC1 for conversion"""
-    "unit2": ADC_CONV_SINGLE_UNIT_2,         """< Only use ADC2 for conversion"""
-    "both": ADC_CONV_BOTH_UNIT,              """< Use Both ADC1 and ADC2 for conversion simultaneously"""
-    "alter": ADC_CONV_ALTER_UNIT             """< Use both ADC1 and ADC2 for conversion by turn. e.g. ADC1 -> ADC2 -> ADC1 -> ADC2 ....."""
+    "unit1": ADC_CONV_SINGLE_UNIT_1,         #< Only use ADC1 for conversion
+    "unit2": ADC_CONV_SINGLE_UNIT_2,         #< Only use ADC2 for conversion
+    "both": ADC_CONV_BOTH_UNIT,              #< Use Both ADC1 and ADC2 for conversion simultaneously
+    "alter": ADC_CONV_ALTER_UNIT,            #< Use both ADC1 and ADC2 for conversion by turn. e.g. ADC1 -> ADC2 -> ADC1 -> ADC2 .....
 }
 
 sampling_mode = adc_ns.enum("SamplingMode", is_class=True)
