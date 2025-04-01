@@ -136,14 +136,14 @@ float ADCOneshotSensor::sample()
   
   //-------------ADC1 Config---------------//
   adc_oneshot_chan_cfg_t config = {
-      .atten = ADC_ATTEN_DB_12,
+      .atten = this->attenuation_,
       .bitwidth = ADC_BITWIDTH_DEFAULT,
   };
   ESP_ERROR_CHECK(adc_oneshot_config_channel(adc1_handle, this->channel1_, &config));
   
   //-------------ADC1 Calibration Init---------------//
   adc_cali_handle_t adc1_cali_chan0_handle = NULL;
-  bool do_calibration1_chan0 = adc_calibration_init(ADC_UNIT_1, this->channel1_, ADC_ATTEN, &adc1_cali_chan0_handle);
+  bool do_calibration1_chan0 = adc_calibration_init(ADC_UNIT_1, this->channel1_, this->attenuation_, &adc1_cali_chan0_handle);
   
   adc_oneshot_read(adc1_handle, this->channel1_, &adc_raw[0][0]);
   ESP_LOGI(TAG, "ADC%d Channel[%d] Raw Data: %d", ADC_UNIT_1 + 1, this->channel1_, adc_raw[0][0]);
