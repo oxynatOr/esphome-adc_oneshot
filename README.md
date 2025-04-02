@@ -24,7 +24,7 @@
 [![Issues][issues-shield]][issues-url]
 [![project_license][license-shield]][license-url]
 <br />
-<h1 align="center">Xbox360 RFModule <sup>WIP</sup></h1>
+<h1 align="center">ESPHome ADC OneShot<sup>WIP</sup></h1>
 
 <!-- ABOUT THE PROJECT -->
 
