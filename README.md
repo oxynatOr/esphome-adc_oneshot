@@ -26,8 +26,16 @@
 <br />
 <h1 align="center">ESPHome ADC OneShot<sup>WIP</sup></h1>
 
-<!-- ABOUT THE PROJECT -->
-
+use this:
+```
+external_components:
+  - source:
+      type: git
+      url: https://github.com/oxynatOr/esphome
+      ref: adc-new-library-espidf-5
+    refresh: 5min
+    components: [adc]
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
